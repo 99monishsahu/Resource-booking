@@ -1,0 +1,114 @@
+
+
+  person_name: {
+    type: String
+  },
+
+  person_number: {
+    type: Number
+  },
+
+  person_email: {
+    type: String
+  },
+
+  booking_date_start: {
+    type: String
+  },
+
+  booking_date_end: {
+    type: String
+  },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+todoRoutes.route("/booking/:id").post(function(req, res) {
+  let details = new Details(req.body);
+
+  Todo.findById(req.params.id, function(err, todo) {
+    if (!todo) res.status(404).send("data is not found");
+    else todo.resource_name = req.body.resource_name;
+    todo.status = req.body.status;
+
+    details
+      .save()
+      .then(details => {
+        res.status(200).json({ details: "Details added successfully" });
+      })
+      .catch(err => {
+        res.status(400).send("Adding new details failed");
+      });
+  });
+});
+
+
+let Details = require("./details.model");
+
+
+
+let Details = require("./details.model");
+
+detailsRoutes.route("/").get(function(req, res) {
+  Details.find(function(err, demodb) {
+    if (err) {
+      console.log(err);
+    } else {
+      res.json(demodb);
+    }
+  });
+});
+
+detailsRoutes.route("/:id").get(function(req, res) {
+  let id = req.params.id;
+  Details.findById(id, function(err, details) {
+    res.json(details);
+  });
+});
+
+detailsRoutes.route("/booking/:id").post(function(req, res) {
+  let details = new Details(req.body);
+  details
+    .save()
+    .then(details => {
+      res.status(200).json({ details: "Details added successfully" });
+    })
+    .catch(err => {
+      res.status(400).send("adding new Resource failed");
+    });
+});
+
+detailsRoutes.route("/update/:id").post(function(req, res) {
+  Details.findById(req.params.id, function(err, details) {
+    if (!details) res.status(404).send("data is not found");
+    else details.resource_name = req.body.resource_name;
+    details.status = req.body.status;
+
+    details
+      .save()
+      .then(details => {
+        res.json("details updated");
+      })
+      .catch(err => {
+        res.status(400).send("Update not possible");
+      });
+  });
+});
+
+app.use("/demodb", detailsRoutes);
+
+
+
+
+
